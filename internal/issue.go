@@ -75,7 +75,51 @@ func ParseIssue(data []byte) (*Issue, error) {
 		return nil, fmt.Errorf("parsing YAML: %w", err)
 	}
 	issue.Body = strings.TrimSpace(body)
+	if err := issue.Validate(); err != nil {
+		return nil, err
+	}
 	return &issue, nil
+}
+
+var validTypes = map[string]bool{
+	"task": true, "bug": true, "feature": true, "epic": true, "chore": true,
+}
+
+var validStatuses = map[string]bool{
+	"open": true, "in_progress": true, "done": true, "cancelled": true,
+}
+
+func (i *Issue) Validate() error {
+	var errs []string
+	if i.ID == "" {
+		errs = append(errs, "missing required field: id")
+	}
+	if i.Title == "" {
+		errs = append(errs, "missing required field: title")
+	}
+	if i.Type == "" {
+		errs = append(errs, "missing required field: type")
+	} else if !validTypes[i.Type] {
+		errs = append(errs, fmt.Sprintf("invalid type %q (must be task, bug, feature, epic, or chore)", i.Type))
+	}
+	if i.Status == "" {
+		errs = append(errs, "missing required field: status")
+	} else if !validStatuses[i.Status] {
+		errs = append(errs, fmt.Sprintf("invalid status %q (must be open, in_progress, done, or cancelled)", i.Status))
+	}
+	if i.Priority < 0 || i.Priority > 4 {
+		errs = append(errs, fmt.Sprintf("invalid priority %d (must be 0-4)", i.Priority))
+	}
+	if i.Created == "" {
+		errs = append(errs, "missing required field: created")
+	}
+	if i.Updated == "" {
+		errs = append(errs, "missing required field: updated")
+	}
+	if len(errs) > 0 {
+		return fmt.Errorf("validation errors:\n  - %s", strings.Join(errs, "\n  - "))
+	}
+	return nil
 }
 
 func (i *Issue) Serialize() []byte {

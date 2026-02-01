@@ -70,7 +70,8 @@ func loadFrom(dir string) ([]*Issue, error) {
 		}
 		issue, err := ParseIssue(data)
 		if err != nil {
-			continue // skip malformed files
+			fmt.Fprintf(os.Stderr, "warning: %s: %s\n", e.Name(), err)
+			continue
 		}
 		issues = append(issues, issue)
 	}
