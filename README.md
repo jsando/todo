@@ -4,16 +4,16 @@ A lightweight CLI for project-level issue tracking using markdown files. Each is
 
 ## Install
 
+Install the CLI and Claude Code skill in one step:
+
 ```bash
-go install github.com/jsando/todo@latest
+curl -sL https://raw.githubusercontent.com/jsando/todo/main/install.sh | sh
 ```
 
-Or build from source:
+Or install just the CLI:
 
 ```bash
-git clone https://github.com/jsando/todo.git
-cd todo
-go build -o todo .
+go install github.com/jsando/todo@latest
 ```
 
 ## Quick Start
