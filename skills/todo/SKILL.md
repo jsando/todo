@@ -1,3 +1,8 @@
+---
+name: todo
+description: This skill activates when a `.todo/` directory exists in the project, or when the user asks to create/manage issues with `todo`.
+---
+
 # todo — Markdown Issue Tracker Skill
 
 ## Activation
