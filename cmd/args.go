@@ -2,6 +2,12 @@ package cmd
 
 import "strings"
 
+// stringList implements flag.Value for repeatable string flags.
+type stringList []string
+
+func (s *stringList) String() string     { return strings.Join(*s, ",") }
+func (s *stringList) Set(v string) error { *s = append(*s, v); return nil }
+
 // reorderArgs moves flag arguments before positional arguments so that
 // Go's flag package can parse them correctly. It recognizes flags as args
 // starting with "-" and handles flags with separate values (e.g. -t feature).

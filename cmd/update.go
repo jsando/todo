@@ -16,8 +16,10 @@ func Update(args []string) error {
 	title := fs.String("title", "", "New title")
 	addDep := fs.String("add-dep", "", "Add dependency")
 	rmDep := fs.String("rm-dep", "", "Remove dependency")
-	addLabel := fs.String("add-label", "", "Add label")
-	rmLabel := fs.String("rm-label", "", "Remove label")
+	var addLabels stringList
+	var rmLabels stringList
+	fs.Var(&addLabels, "add-label", "Add label (repeatable)")
+	fs.Var(&rmLabels, "rm-label", "Remove label (repeatable)")
 	epic := fs.String("epic", "", "Set epic")
 	jsonOut := fs.Bool("json", false, "JSON output")
 	fs.Parse(reorderArgs(args))
@@ -53,11 +55,11 @@ func Update(args []string) error {
 	if *rmDep != "" {
 		issue.Deps = removeStr(issue.Deps, *rmDep)
 	}
-	if *addLabel != "" {
-		issue.Labels = append(issue.Labels, *addLabel)
+	for _, l := range addLabels {
+		issue.Labels = append(issue.Labels, l)
 	}
-	if *rmLabel != "" {
-		issue.Labels = removeStr(issue.Labels, *rmLabel)
+	for _, l := range rmLabels {
+		issue.Labels = removeStr(issue.Labels, l)
 	}
 	if *epic != "" {
 		issue.Epic = *epic
@@ -73,6 +75,7 @@ func Update(args []string) error {
 	if err := internal.WriteIssue(dir, issue); err != nil {
 		return err
 	}
+	issue.Path = filepath.Join(dir, issue.Filename())
 
 	if *jsonOut {
 		internal.PrintJSON(os.Stdout, issue)

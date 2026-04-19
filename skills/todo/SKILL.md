@@ -101,10 +101,19 @@ todo list --type epic
 
 ```bash
 todo init                    # create .todo/ directory
-todo create "title" --type X --priority X [--epic id] [--dep id]
-todo update <id> --status X --add-label X --add-dep X
+todo create "title" --type X --priority X [--epic id] [--dep id] [--label X ...] [--body X]
+todo update <id> --status X [--add-label X ...] [--rm-label X ...] [--add-dep X]
 todo close <id> [--reason X] # move to archive
 todo reopen <id>             # restore from archive
+```
+
+With `--json`, `create`, `update`, and `show` include a `path` field pointing at
+the issue's markdown file — use it to append to the body without re-globbing.
+`--body` accepts a literal string, or `-` to read from stdin:
+
+```bash
+todo create "Add metrics" --type feature --body "## Problem\n..." --json
+echo "## Problem\n..." | todo create "Add metrics" --type feature --body - --json
 ```
 
 Partial IDs work (like git): `todo show a3f7` matches `a3f7c201-add-jwt-auth.md`.

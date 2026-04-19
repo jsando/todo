@@ -22,6 +22,7 @@ type Issue struct {
 	Labels   []string `yaml:"labels,omitempty" json:"labels,omitempty"`
 
 	Body string `yaml:"-" json:"body,omitempty"`
+	Path string `yaml:"-" json:"path,omitempty"`
 }
 
 func NewID() string {

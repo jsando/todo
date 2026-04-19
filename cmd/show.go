@@ -28,6 +28,7 @@ func Show(args []string) error {
 	}
 
 	if *jsonOut {
+		issue.Path = path
 		internal.PrintJSON(os.Stdout, issue)
 	} else {
 		data, err := os.ReadFile(path)

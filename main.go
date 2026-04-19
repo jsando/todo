@@ -95,20 +95,27 @@ Example:
 
 	"create": `todo create "title" [flags]
 
-Create a new issue and print its ID.
+Create a new issue and print its ID. With --json, the output includes
+"path" (the absolute path to the created markdown file) so callers can
+append to the body without re-globbing.
 
 Flags:
   --type      Issue type: task, bug, feature, epic, chore (default: task)
   --priority  Priority: 0 (critical) to 4 (backlog) (default: 2)
   --epic      Parent epic issue ID
   --dep       Dependency issue ID (this issue is blocked by it)
-  --json      Print created issue as JSON
+  --label     Label (repeatable)
+  --body      Markdown body for the issue. Use "-" to read from stdin.
+  --json      Print created issue (including "path") as JSON
 
 Examples:
   todo create "Add user authentication"
   todo create "Fix memory leak in worker" --type bug --priority 0
   todo create "Design new dashboard" --type feature --priority 1
   todo create "Refactor config loading" --type chore --json
+  todo create "Add metrics" --label observability --label backend
+  todo create "Sleep ingest" --type feature --body "## Problem..." --json
+  echo "## Problem\n..." | todo create "Sleep ingest" --body - --json
 
   Create an epic with child issues:
     todo create "User auth system" --type epic --priority 1
@@ -169,15 +176,16 @@ Flags:
   --epic        Set parent epic ID
   --add-dep     Add a dependency
   --rm-dep      Remove a dependency
-  --add-label   Add a label
-  --rm-label    Remove a label
-  --json        Print updated issue as JSON
+  --add-label   Add a label (repeatable)
+  --rm-label    Remove a label (repeatable)
+  --json        Print updated issue (including "path") as JSON
 
 Examples:
   todo update a3f7 --status in_progress
   todo update a3f7 --priority 0 --add-label urgent
   todo update a3f7 --add-dep b912de44
   todo update a3f7 --rm-label wontfix
+  todo update a3f7 --add-label auth --add-label api
   todo update a3f7 --title "Revised title" --json
 `,
 
